@@ -15,7 +15,7 @@
 
 | Phase | 이름 | 목표 | 상태 |
 |-------|------|------|------|
-| Phase 1 | 기반 세팅 | 프로젝트 초기화 + 설문 UI 골격 | 🔲 |
+| Phase 1 | 기반 세팅 | 프로젝트 초기화 + 설문 UI 골격 | 🔄 |
 | Phase 2 | 성향 진단 | 설문 흐름 완성 + 점수 계산 | 🔲 |
 | Phase 3 | 포트폴리오 생성 | OpenAI 연동 + 결과 UI | 🔲 |
 | Phase 4 | PDF 출력 | PDF 생성 + 다운로드 | 🔲 |
@@ -30,19 +30,19 @@
 **목표**: 개발 환경 구성 + 페이지 라우팅 + sessionStorage 유틸 완성.
 
 ### 완료 조건
-- [ ] Next.js 14 프로젝트 초기화 (TypeScript strict, Tailwind)
-- [ ] 페이지 라우팅 구성 (`/` → `/onboarding` → `/result`)
-- [ ] sessionStorage 유틸 구현 및 타입 정의
-- [ ] OpenAI SDK 설치 및 환경변수 설정
-- [ ] typecheck + lint 0건 확인
+- [x] Next.js 14 프로젝트 초기화 (TypeScript strict, Tailwind)
+- [x] 페이지 라우팅 구성 (`/` → `/onboarding` → `/result`)
+- [x] sessionStorage 유틸 구현 및 타입 정의
+- [x] OpenAI SDK 설치 및 환경변수 설정
+- [x] typecheck + lint 0건 확인
 - [ ] Vercel 배포 파이프라인 연결
 
 ### 작업 목록
-- [ ] 프로젝트 초기화 및 패키지 설치
-- [ ] 페이지 라우팅 및 레이아웃 구성
-- [ ] `lib/session/` — sessionStorage 읽기/쓰기/초기화 유틸
-- [ ] `types/index.ts` — 공용 타입 정의
-- [ ] 환경변수 설정 및 `.gitignore` 확인
+- [x] 프로젝트 초기화 및 패키지 설치
+- [x] 페이지 라우팅 및 레이아웃 구성
+- [x] `lib/session/` — sessionStorage 읽기/쓰기/초기화 유틸
+- [x] `types/index.ts` — 공용 타입 정의
+- [x] 환경변수 설정 및 `.gitignore` 확인
 - [ ] Vercel 배포 연결
 
 ---
