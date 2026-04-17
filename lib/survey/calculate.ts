@@ -51,8 +51,10 @@ export function calculateRiskScore(answers: SurveyAnswers): number {
     SCORE_CONFIG.WEIGHTS.D +
     SCORE_CONFIG.WEIGHTS.E
 
-  // 0-100 범위로 정규화
-  const normalizedScore = (weightedScore / totalWeight) * 20
+  // 가중 평균 1~5점을 0~100으로 선형 매핑
+  // (avg - 1) / 4 * 100 — 최저 1점=0, 최고 5점=100
+  const weightedAvg = weightedScore / totalWeight
+  const normalizedScore = ((weightedAvg - 1) / 4) * 100
 
   return Math.min(100, Math.max(0, normalizedScore))
 }

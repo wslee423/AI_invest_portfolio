@@ -26,10 +26,10 @@ export function SurveyStep({
 
   const questions = step.questions
     .map((qId) => SURVEY_QUESTIONS.find((q) => q.id === qId))
-    .filter(Boolean)
+    .filter((q): q is NonNullable<typeof q> => q !== undefined)
 
   const isStepComplete = questions.every(
-    (q) => q && answers[q.id as keyof SurveyAnswers]
+    (q) => answers[q.id as keyof SurveyAnswers]
   )
 
   return (
@@ -54,19 +54,16 @@ export function SurveyStep({
       <h2 className="text-2xl font-bold text-gray-900 mb-8">{step.title}</h2>
 
       <div className="mb-8">
-        {questions.map((question) => {
-          if (!question) return null
-          return (
-            <SurveyQuestion
-              key={question.id}
-              question={question}
-              selectedAnswer={answers[question.id as keyof SurveyAnswers]}
-              onAnswerChange={(answer) => {
-                onAnswerChange(question.id as keyof SurveyAnswers, answer)
-              }}
-            />
-          )
-        })}
+        {questions.map((question) => (
+          <SurveyQuestion
+            key={question.id}
+            question={question}
+            selectedAnswer={answers[question.id as keyof SurveyAnswers]}
+            onAnswerChange={(answer) => {
+              onAnswerChange(question.id as keyof SurveyAnswers, answer)
+            }}
+          />
+        ))}
       </div>
 
       <div className="flex gap-3">

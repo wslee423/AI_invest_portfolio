@@ -5,7 +5,6 @@ import {
   Pie,
   Cell,
   Tooltip,
-  Legend,
   ResponsiveContainer,
 } from 'recharts'
 import type { PortfolioResult } from '@/types'
@@ -39,15 +38,12 @@ export function AllocationChart({ allocations }: AllocationChartProps) {
           innerRadius={70}
           outerRadius={110}
           dataKey="value"
-          label={({ name, value }) => `${name} ${value}%`}
-          labelLine={false}
         >
           {data.map((_, index) => (
             <Cell key={index} fill={COLORS[index % COLORS.length]} />
           ))}
         </Pie>
-        <Tooltip formatter={(value: number) => `${value}%`} />
-        <Legend />
+        <Tooltip formatter={(value: number) => [`${value}%`, '비중']} />
       </PieChart>
     </ResponsiveContainer>
   )

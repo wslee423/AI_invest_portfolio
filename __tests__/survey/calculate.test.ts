@@ -5,7 +5,6 @@ import {
   applyEmergencyFundAdjustment,
 } from '@/lib/survey/calculate'
 
-// 모든 항목 최고점 (aggressive) 답변
 const maxAnswers: SurveyAnswers = {
   A1: '20대',
   A2: '주식·ETF 직접 투자 3년 이상',
@@ -26,7 +25,6 @@ const maxAnswers: SurveyAnswers = {
   E1: '별로 FOMO를 느끼지 않는 편',
 }
 
-// 모든 항목 최저점 (conservative) 답변
 const minAnswers: SurveyAnswers = {
   A1: '60대 이상',
   A2: '투자 경험 없음',
@@ -48,21 +46,18 @@ const minAnswers: SurveyAnswers = {
 }
 
 describe('calculateRiskScore', () => {
-  it('최고점 답변은 높은 점수를 반환한다', () => {
+  it('최고점 답변은 100에 가까운 점수를 반환한다', () => {
     const score = calculateRiskScore(maxAnswers)
-    expect(score).toBeGreaterThan(60)
-    expect(score).toBeLessThanOrEqual(100)
+    expect(score).toBe(100)
   })
 
-  it('최저점 답변은 낮은 점수를 반환한다', () => {
+  it('최저점 답변은 0에 가까운 점수를 반환한다', () => {
     const score = calculateRiskScore(minAnswers)
-    expect(score).toBeLessThan(40)
-    expect(score).toBeGreaterThanOrEqual(0)
+    expect(score).toBe(0)
   })
 
   it('빈 답변은 0을 반환한다', () => {
-    const score = calculateRiskScore({})
-    expect(score).toBe(0)
+    expect(calculateRiskScore({})).toBe(0)
   })
 
   it('점수는 항상 0-100 범위 내에 있다', () => {
@@ -97,30 +92,36 @@ describe('classifyRiskLevel', () => {
     expect(classifyRiskLevel(0)).toBe('very_conservative')
     expect(classifyRiskLevel(19)).toBe('very_conservative')
   })
+
+  it('최저점 답변은 very_conservative로 분류된다', () => {
+    const score = calculateRiskScore(minAnswers)
+    expect(classifyRiskLevel(score)).toBe('very_conservative')
+  })
+
+  it('최고점 답변은 very_aggressive로 분류된다', () => {
+    const score = calculateRiskScore(maxAnswers)
+    expect(classifyRiskLevel(score)).toBe('very_aggressive')
+  })
 })
 
 describe('applyEmergencyFundAdjustment', () => {
   it('비상금 1~3개월(score 2)이면 1단계 하향', () => {
     const answers: SurveyAnswers = { ...maxAnswers, B6: '1~3개월' }
-    const result = applyEmergencyFundAdjustment('very_aggressive', answers)
-    expect(result).toBe('aggressive')
+    expect(applyEmergencyFundAdjustment('very_aggressive', answers)).toBe('aggressive')
   })
 
   it('비상금 거의 없음(score 1)이면 1단계 하향', () => {
     const answers: SurveyAnswers = { ...maxAnswers, B6: '거의 없음' }
-    const result = applyEmergencyFundAdjustment('moderate', answers)
-    expect(result).toBe('conservative')
+    expect(applyEmergencyFundAdjustment('moderate', answers)).toBe('conservative')
   })
 
   it('비상금 6개월 이상(score 5)이면 하향 없음', () => {
     const answers: SurveyAnswers = { ...maxAnswers, B6: '6개월 이상' }
-    const result = applyEmergencyFundAdjustment('very_aggressive', answers)
-    expect(result).toBe('very_aggressive')
+    expect(applyEmergencyFundAdjustment('very_aggressive', answers)).toBe('very_aggressive')
   })
 
   it('이미 very_conservative이면 더 이상 하향하지 않음', () => {
     const answers: SurveyAnswers = { ...minAnswers, B6: '거의 없음' }
-    const result = applyEmergencyFundAdjustment('very_conservative', answers)
-    expect(result).toBe('very_conservative')
+    expect(applyEmergencyFundAdjustment('very_conservative', answers)).toBe('very_conservative')
   })
 })

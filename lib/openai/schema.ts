@@ -36,7 +36,42 @@ export const PortfolioResultSchema = z.object({
   summary: z.string().min(1),
 })
 
-export type PortfolioResultFromSchema = z.infer<typeof PortfolioResultSchema>
+// OpenAI 요청 입력 검증 스키마 (API route에서 사용)
+export const PortfolioRequestSchema = z.object({
+  risk_level: z.enum([
+    'very_conservative',
+    'conservative',
+    'moderate',
+    'aggressive',
+    'very_aggressive',
+  ]),
+  monthly_investment: z.number().nonnegative(),
+  investment_period_years: z.number().positive(),
+  loss_tolerance_pct: z.number().min(0).max(100),
+  behavior_profile: z.object({
+    involvement: z.enum([
+      'active',
+      'semi_active',
+      'semi_passive',
+      'passive',
+      'full_passive',
+    ]),
+    return_type: z.enum([
+      'growth',
+      'growth_income',
+      'balanced',
+      'income_growth',
+      'income',
+    ]),
+    fomo_type: z.enum([
+      'relative_loss',
+      'exclusion',
+      'cash_regret',
+      'social_pressure',
+      'low_fomo',
+    ]),
+  }),
+})
 
 // OpenAI Structured Outputs용 JSON Schema
 export const portfolioJsonSchema = {

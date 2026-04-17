@@ -245,15 +245,13 @@ export const SURVEY_STEPS = [
   { stepNumber: 5, title: '투자 행동 패턴', questions: ['D1', 'D2', 'E1'] },
 ]
 
-// 점수 계산 상수
+// 카테고리별 가중치 (E는 FOMO 유형 태그용, 점수 미반영)
 export const SCORE_CONFIG = {
-  MIN_RAW: 24,
-  MAX_RAW: 120,
   WEIGHTS: {
     A: 1,
     B: 1.5,
     C: 2,
     D: 1,
-    E: 0, // FOMO는 점수에 미반영
+    E: 0,
   },
 }
