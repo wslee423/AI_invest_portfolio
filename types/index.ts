@@ -62,6 +62,7 @@ export interface PortfolioResult {
     asset_class: AssetClass
     ratio: number
     description: string
+    examples: string[]   // 자산군별 종목 예시 1~3개
   }[]
   reasoning: string           // CONSTITUTION 원칙 3 — 필수
   risk_indicators: {

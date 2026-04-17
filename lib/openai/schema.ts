@@ -18,6 +18,7 @@ export const PortfolioResultSchema = z.object({
         asset_class: AssetClassEnum,
         ratio: z.number().int().min(0).max(100),
         description: z.string().min(1),
+        examples: z.array(z.string().min(1)).min(1).max(3),
       })
     )
     .min(1)
@@ -93,8 +94,12 @@ export const portfolioJsonSchema = {
             },
             ratio: { type: 'integer' },
             description: { type: 'string' },
+            examples: {
+              type: 'array',
+              items: { type: 'string' },
+            },
           },
-          required: ['asset_class', 'ratio', 'description'],
+          required: ['asset_class', 'ratio', 'description', 'examples'],
           additionalProperties: false,
         },
       },

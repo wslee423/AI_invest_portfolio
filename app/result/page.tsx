@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/navigation'
-import type { PortfolioResult, PortfolioError, PortfolioRequest } from '@/types'
+import type { PortfolioResult, PortfolioError, PortfolioRequest, RiskLevel } from '@/types'
 import { getSession, setSession, hasCompletedOnboarding } from '@/lib/session'
 import { PortfolioCard } from '@/components/features/result/PortfolioCard'
 
@@ -17,7 +17,7 @@ const PdfDownloadButton = dynamic(
 
 type PageState =
   | { status: 'loading' }
-  | { status: 'success'; result: PortfolioResult }
+  | { status: 'success'; result: PortfolioResult; riskLevel: RiskLevel }
   | { status: 'error'; error: PortfolioError }
 
 export default function ResultPage() {
@@ -39,7 +39,7 @@ export default function ResultPage() {
 
     // 이미 생성된 포트폴리오가 있으면 바로 표시
     if (session.portfolio) {
-      setState({ status: 'success', result: session.portfolio })
+      setState({ status: 'success', result: session.portfolio, riskLevel: session.riskLevel })
       return
     }
 
@@ -64,7 +64,7 @@ export default function ResultPage() {
         }
         const result = data as PortfolioResult
         setSession({ ...session, portfolio: result })
-        setState({ status: 'success', result })
+        setState({ status: 'success', result, riskLevel: session.riskLevel })
       })
       .catch(() => {
         setState({
@@ -110,7 +110,7 @@ export default function ResultPage() {
   return (
     <main className="min-h-screen bg-gray-50 py-10 px-4">
       <div className="mx-auto max-w-2xl">
-        <PortfolioCard result={state.result} />
+        <PortfolioCard result={state.result} riskLevel={state.riskLevel} />
         <div className="mt-8 flex gap-3">
           <button
             onClick={() => router.push('/onboarding')}
@@ -118,7 +118,7 @@ export default function ResultPage() {
           >
             다시 진단하기
           </button>
-          <PdfDownloadButton result={state.result} />
+          <PdfDownloadButton result={state.result} riskLevel={state.riskLevel} />
         </div>
       </div>
     </main>

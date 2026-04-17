@@ -2,15 +2,17 @@
 
 import { useEffect, useState } from 'react'
 import { pdf } from '@react-pdf/renderer'
-import type { PortfolioResult } from '@/types'
+import type { PortfolioResult, RiskLevel } from '@/types'
+import { RISK_NICKNAMES } from '@/lib/risk-nicknames'
 import { registerFonts } from '@/lib/pdf/fonts'
 import { PdfDocument } from './PdfDocument'
 
 interface PdfDownloadButtonProps {
   result: PortfolioResult
+  riskLevel: RiskLevel
 }
 
-export function PdfDownloadButton({ result }: PdfDownloadButtonProps) {
+export function PdfDownloadButton({ result, riskLevel }: PdfDownloadButtonProps) {
   const [isGenerating, setIsGenerating] = useState(false)
   const [ready, setReady] = useState(false)
 
@@ -22,11 +24,13 @@ export function PdfDownloadButton({ result }: PdfDownloadButtonProps) {
   const handleDownload = async () => {
     setIsGenerating(true)
     try {
-      const blob = await pdf(<PdfDocument result={result} />).toBlob()
+      const blob = await pdf(
+        <PdfDocument result={result} riskLevel={riskLevel} />
+      ).toBlob()
       const url = URL.createObjectURL(blob)
       const a = document.createElement('a')
       a.href = url
-      a.download = `포트폴리오_${result.risk_label}.pdf`
+      a.download = `포트폴리오_${RISK_NICKNAMES[riskLevel].nickname}형.pdf`
       a.click()
       URL.revokeObjectURL(url)
     } finally {

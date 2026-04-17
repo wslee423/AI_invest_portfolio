@@ -4,21 +4,26 @@ import {
   View,
   Text,
 } from '@react-pdf/renderer'
-import type { PortfolioResult } from '@/types'
+import type { PortfolioResult, RiskLevel } from '@/types'
+import { RISK_NICKNAMES } from '@/lib/risk-nicknames'
 import { styles } from './styles'
 
 interface PdfDocumentProps {
   result: PortfolioResult
+  riskLevel: RiskLevel
 }
 
-export function PdfDocument({ result }: PdfDocumentProps) {
+export function PdfDocument({ result, riskLevel }: PdfDocumentProps) {
+  const { nickname, emoji, tagline } = RISK_NICKNAMES[riskLevel]
+
   return (
     <Document>
       <Page size="A4" style={styles.page}>
         {/* 헤더 */}
         <View style={styles.header}>
           <Text style={styles.headerLabel}>나의 투자 성향</Text>
-          <Text style={styles.headerTitle}>{result.risk_label}</Text>
+          <Text style={styles.headerTitle}>{emoji} &apos;{nickname}&apos; 형</Text>
+          <Text style={[styles.headerDesc, { marginBottom: 4 }]}>{tagline}</Text>
           <Text style={styles.headerDesc}>{result.risk_description}</Text>
         </View>
 
@@ -40,7 +45,14 @@ export function PdfDocument({ result }: PdfDocumentProps) {
             <View key={i} style={styles.tableRow}>
               <Text style={styles.colAsset}>{a.asset_class}</Text>
               <Text style={styles.colRatio}>{a.ratio}%</Text>
-              <Text style={styles.colDesc}>{a.description}</Text>
+              <View style={styles.colDesc}>
+                <Text>{a.description}</Text>
+                {a.examples.length > 0 && (
+                  <Text style={{ fontSize: 8, color: '#6B7280', marginTop: 2 }}>
+                    예시: {a.examples.join(', ')}
+                  </Text>
+                )}
+              </View>
             </View>
           ))}
         </View>
