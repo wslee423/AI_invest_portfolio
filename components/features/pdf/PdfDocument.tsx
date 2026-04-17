@@ -82,6 +82,39 @@ export function PdfDocument({ result, riskLevel }: PdfDocumentProps) {
           <Text style={styles.body}>{result.behavior_advice}</Text>
         </View>
 
+        {/* 추천 포트폴리오 플랜 */}
+        {result.portfolio_plans?.map((plan, pi) => (
+          <View key={pi} style={styles.section}>
+            <Text style={styles.sectionTitle}>
+              플랜 {pi + 1}: {plan.plan_name}
+            </Text>
+            <Text style={[styles.body, { marginBottom: 6, color: '#6B7280' }]}>
+              {plan.plan_description}
+            </Text>
+            <View style={styles.tableHeader}>
+              <Text style={[styles.colAsset, { width: '25%' }]}>종목</Text>
+              <Text style={[styles.colAsset, { width: '18%' }]}>자산군</Text>
+              <Text style={[styles.colRatio, { width: '22%' }]}>월 투자</Text>
+              <Text style={[styles.colRatio, { width: '20%' }]}>참고 단가</Text>
+              <Text style={[styles.colRatio, { width: '15%' }]}>월 수량</Text>
+            </View>
+            {plan.holdings.map((h, hi) => (
+              <View key={hi} style={styles.tableRow}>
+                <Text style={[styles.colAsset, { width: '25%', fontWeight: 700 }]}>{h.ticker}</Text>
+                <Text style={[styles.colAsset, { width: '18%', color: '#6B7280' }]}>{h.asset_class}</Text>
+                <Text style={[styles.colRatio, { width: '22%' }]}>{h.monthly_amount.toLocaleString()}원</Text>
+                <Text style={[styles.colRatio, { width: '20%', color: '#9CA3AF' }]}>{h.approx_price.toLocaleString()}원</Text>
+                <Text style={[styles.colRatio, { width: '15%', fontWeight: 700 }]}>
+                  {h.approx_shares % 1 === 0 ? `${h.approx_shares}주` : `${h.approx_shares.toFixed(1)}주`}
+                </Text>
+              </View>
+            ))}
+            <Text style={{ fontSize: 8, color: '#9CA3AF', marginTop: 4 }}>
+              월 합계: {plan.total_monthly.toLocaleString()}원 / ※ 단가·수량은 AI 추정값
+            </Text>
+          </View>
+        ))}
+
         {/* 법적 고지 (고정 푸터) */}
         <View style={styles.footer} fixed>
           <Text style={styles.footerText}>

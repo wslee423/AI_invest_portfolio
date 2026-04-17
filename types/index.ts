@@ -71,6 +71,18 @@ export interface PortfolioResult {
   }[]
   behavior_advice: string
   summary: string
+  portfolio_plans: {
+    plan_name: string
+    plan_description: string
+    holdings: {
+      ticker: string
+      asset_class: AssetClass
+      monthly_amount: number   // 원화
+      approx_price: number     // 원화 기준 참고 단가
+      approx_shares: number    // 월 매수 수량 (소수 허용)
+    }[]
+    total_monthly: number
+  }[]
 }
 
 // API 에러 응답

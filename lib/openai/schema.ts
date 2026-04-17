@@ -35,6 +35,22 @@ export const PortfolioResultSchema = z.object({
   ),
   behavior_advice: z.string().min(1),
   summary: z.string().min(1),
+  portfolio_plans: z.array(
+    z.object({
+      plan_name: z.string().min(1),
+      plan_description: z.string().min(1),
+      holdings: z.array(
+        z.object({
+          ticker: z.string().min(1),
+          asset_class: AssetClassEnum,
+          monthly_amount: z.number().int().nonnegative(),
+          approx_price: z.number().int().positive(),
+          approx_shares: z.number().nonnegative(),
+        })
+      ).min(1),
+      total_monthly: z.number().int().nonnegative(),
+    })
+  ).length(3),
 })
 
 // OpenAI 요청 입력 검증 스키마 (API route에서 사용)
@@ -118,6 +134,37 @@ export const portfolioJsonSchema = {
       },
       behavior_advice: { type: 'string' },
       summary: { type: 'string' },
+      portfolio_plans: {
+        type: 'array',
+        items: {
+          type: 'object',
+          properties: {
+            plan_name: { type: 'string' },
+            plan_description: { type: 'string' },
+            holdings: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: {
+                  ticker: { type: 'string' },
+                  asset_class: {
+                    type: 'string',
+                    enum: ['국내주식', '해외ETF', '채권', '리츠', '금', '현금성'],
+                  },
+                  monthly_amount: { type: 'integer' },
+                  approx_price: { type: 'integer' },
+                  approx_shares: { type: 'number' },
+                },
+                required: ['ticker', 'asset_class', 'monthly_amount', 'approx_price', 'approx_shares'],
+                additionalProperties: false,
+              },
+            },
+            total_monthly: { type: 'integer' },
+          },
+          required: ['plan_name', 'plan_description', 'holdings', 'total_monthly'],
+          additionalProperties: false,
+        },
+      },
     },
     required: [
       'risk_label',
@@ -127,6 +174,7 @@ export const portfolioJsonSchema = {
       'risk_indicators',
       'behavior_advice',
       'summary',
+      'portfolio_plans',
     ],
     additionalProperties: false,
   },

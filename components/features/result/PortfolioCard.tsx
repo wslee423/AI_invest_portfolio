@@ -1,6 +1,7 @@
 import type { PortfolioResult, RiskLevel } from '@/types'
 import { RISK_NICKNAMES } from '@/lib/risk-nicknames'
 import { AllocationChart, ALLOCATION_COLORS } from './AllocationChart'
+import { PortfolioPlanCard } from './PortfolioPlanCard'
 import { DisclaimerBanner } from '@/components/features/disclaimer/DisclaimerBanner'
 
 interface PortfolioCardProps {
@@ -98,8 +99,27 @@ export function PortfolioCard({ result, riskLevel }: PortfolioCardProps) {
       {/* 행동 조언 */}
       <section>
         <h3 className="mb-2 text-lg font-semibold text-gray-900">투자 행동 조언</h3>
-        <p className="text-sm leading-relaxed text-gray-700">{result.behavior_advice}</p>
+        <div className="rounded-xl border border-amber-200 bg-amber-50 p-4">
+          <p className="text-sm leading-relaxed text-gray-700 whitespace-pre-wrap">
+            {result.behavior_advice}
+          </p>
+        </div>
       </section>
+
+      {/* 추천 포트폴리오 플랜 */}
+      {result.portfolio_plans?.length > 0 && (
+        <section>
+          <h3 className="mb-1 text-lg font-semibold text-gray-900">추천 포트폴리오 플랜</h3>
+          <p className="mb-4 text-xs text-gray-400">
+            ※ 동일한 자산배분 비율로 구성된 3가지 접근 방법입니다. 단가·수량은 AI 추정값이므로 실제 투자 전 확인이 필요합니다.
+          </p>
+          <div className="space-y-4">
+            {result.portfolio_plans.map((plan, i) => (
+              <PortfolioPlanCard key={i} plan={plan} index={i} />
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* 법적 고지 */}
       <DisclaimerBanner />
