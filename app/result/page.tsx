@@ -1,10 +1,19 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import dynamic from 'next/dynamic'
 import { useRouter } from 'next/navigation'
 import type { PortfolioResult, PortfolioError, PortfolioRequest } from '@/types'
 import { getSession, setSession, hasCompletedOnboarding } from '@/lib/session'
 import { PortfolioCard } from '@/components/features/result/PortfolioCard'
+
+const PdfDownloadButton = dynamic(
+  () =>
+    import('@/components/features/pdf/PdfDownloadButton').then(
+      (m) => m.PdfDownloadButton
+    ),
+  { ssr: false }
+)
 
 type PageState =
   | { status: 'loading' }
@@ -109,6 +118,7 @@ export default function ResultPage() {
           >
             다시 진단하기
           </button>
+          <PdfDownloadButton result={state.result} />
         </div>
       </div>
     </main>
