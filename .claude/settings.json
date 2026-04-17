@@ -1,0 +1,38 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run dev)",
+      "Bash(npm run build)",
+      "Bash(npm run typecheck)",
+      "Bash(npm run lint)",
+      "Bash(npm run test)",
+      "Bash(npm run test:*)",
+      "Bash(npx create-next-app@*)",
+      "Bash(npx *)",
+      "Bash(git status)",
+      "Bash(git diff*)",
+      "Bash(git add *)",
+      "Bash(git commit*)",
+      "Bash(git log*)",
+      "Bash(git branch*)",
+      "Bash(git push*)",
+      "Bash(ls*)",
+      "Bash(cat *)"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "shell": "bash",
+            "command": "if [ -f package.json ]; then echo '=== typecheck ===' && npm run typecheck 2>&1 | tail -30 && echo '=== lint ===' && npm run lint 2>&1 | tail -30; else echo '[harness] package.json 없음 — Phase 1 초기화 후 활성화됨'; fi",
+            "statusMessage": "typecheck + lint 실행 중..."
+          }
+        ]
+      }
+    ]
+  }
+}
