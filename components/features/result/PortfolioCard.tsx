@@ -1,5 +1,5 @@
 import type { PortfolioResult } from '@/types'
-import { AllocationChart } from './AllocationChart'
+import { AllocationChart, ALLOCATION_COLORS } from './AllocationChart'
 import { DisclaimerBanner } from '@/components/features/disclaimer/DisclaimerBanner'
 
 interface PortfolioCardProps {
@@ -28,9 +28,13 @@ export function PortfolioCard({ result }: PortfolioCardProps) {
         <AllocationChart allocations={result.allocations} />
         <div className="mt-4 space-y-2">
           {result.allocations.map((a, i) => (
-            <div key={i} className="flex items-start justify-between gap-4 text-sm">
-              <span className="font-medium text-gray-800">{a.asset_class}</span>
-              <span className="shrink-0 font-bold text-blue-600">{a.ratio}%</span>
+            <div key={i} className="flex items-start gap-3 text-sm">
+              <span
+                className="mt-0.5 h-3 w-3 shrink-0 rounded-full"
+                style={{ backgroundColor: ALLOCATION_COLORS[i % ALLOCATION_COLORS.length] }}
+              />
+              <span className="w-16 shrink-0 font-medium text-gray-800">{a.asset_class}</span>
+              <span className="w-10 shrink-0 font-bold" style={{ color: ALLOCATION_COLORS[i % ALLOCATION_COLORS.length] }}>{a.ratio}%</span>
               <span className="text-gray-500">{a.description}</span>
             </div>
           ))}

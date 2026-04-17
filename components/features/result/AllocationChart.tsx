@@ -5,11 +5,12 @@ import {
   Pie,
   Cell,
   Tooltip,
+  Legend,
   ResponsiveContainer,
 } from 'recharts'
 import type { PortfolioResult } from '@/types'
 
-const COLORS = [
+export const ALLOCATION_COLORS = [
   '#3B82F6',
   '#10B981',
   '#F59E0B',
@@ -29,21 +30,38 @@ export function AllocationChart({ allocations }: AllocationChartProps) {
   }))
 
   return (
-    <ResponsiveContainer width="100%" height={300}>
+    <ResponsiveContainer width="100%" height={340}>
       <PieChart>
         <Pie
           data={data}
           cx="50%"
-          cy="50%"
+          cy="45%"
           innerRadius={70}
           outerRadius={110}
           dataKey="value"
         >
           {data.map((_, index) => (
-            <Cell key={index} fill={COLORS[index % COLORS.length]} />
+            <Cell key={index} fill={ALLOCATION_COLORS[index % ALLOCATION_COLORS.length]} />
           ))}
         </Pie>
-        <Tooltip formatter={(value: number) => [`${value}%`, '비중']} />
+        <Tooltip
+          formatter={(value: number, name: string) => [`${value}%`, name]}
+        />
+        <Legend
+          iconType="circle"
+          iconSize={10}
+          formatter={(value, entry) => {
+            const item = data.find((d) => d.name === value)
+            return (
+              <span style={{ color: '#374151', fontSize: '13px' }}>
+                {value}
+                <strong style={{ marginLeft: '6px', color: entry.color }}>
+                  {item?.value}%
+                </strong>
+              </span>
+            )
+          }}
+        />
       </PieChart>
     </ResponsiveContainer>
   )
