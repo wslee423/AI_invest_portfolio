@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import type { SurveyAnswers, SessionData } from '@/types'
 import { SurveyStep } from '@/components/survey/SurveyStep'
@@ -23,6 +23,10 @@ export default function OnboardingPage() {
   const [currentStep, setCurrentStep] = useState(1)
   const [answers, setAnswers] = useState<SurveyAnswers>({})
 
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [currentStep])
+
   const handleAnswerChange = (
     questionId: keyof SurveyAnswers,
     answer: string
@@ -33,14 +37,12 @@ export default function OnboardingPage() {
   const handleNext = () => {
     if (currentStep < SURVEY_STEPS.length) {
       setCurrentStep(currentStep + 1)
-      window.scrollTo({ top: 0, behavior: 'smooth' })
     }
   }
 
   const handlePrevious = () => {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1)
-      window.scrollTo({ top: 0, behavior: 'smooth' })
     }
   }
 

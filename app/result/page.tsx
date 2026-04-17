@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/navigation'
 import type { PortfolioResult, PortfolioError, PortfolioRequest, RiskLevel } from '@/types'
@@ -23,12 +23,8 @@ type PageState =
 export default function ResultPage() {
   const router = useRouter()
   const [state, setState] = useState<PageState>({ status: 'loading' })
-  const hasFetched = useRef(false)
 
   useEffect(() => {
-    if (hasFetched.current) return
-    hasFetched.current = true
-
     if (!hasCompletedOnboarding()) {
       router.replace('/onboarding')
       return
@@ -37,7 +33,6 @@ export default function ResultPage() {
     const session = getSession()
     if (!session) return
 
-    // 이미 생성된 포트폴리오가 있으면 바로 표시
     if (session.portfolio) {
       setState({ status: 'success', result: session.portfolio, riskLevel: session.riskLevel })
       return
@@ -51,10 +46,13 @@ export default function ResultPage() {
       behavior_profile: session.behavior_profile,
     }
 
+    const controller = new AbortController()
+
     fetch('/api/portfolio', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(req),
+      signal: controller.signal,
     })
       .then(async (res) => {
         const data = await res.json()
@@ -66,12 +64,15 @@ export default function ResultPage() {
         setSession({ ...session, portfolio: result })
         setState({ status: 'success', result, riskLevel: session.riskLevel })
       })
-      .catch(() => {
+      .catch((err: unknown) => {
+        if (err instanceof Error && err.name === 'AbortError') return
         setState({
           status: 'error',
-          error: { code: 'OPENAI_ERROR', message: '네트워크 오류가 발생했습니다' },
+          error: { code: 'OPENAI_ERROR', message: '네트워크 오류가 발생했습니다. 잠시 후 다시 시도해주세요.' },
         })
       })
+
+    return () => controller.abort()
   }, [router])
 
   if (state.status === 'loading') {
