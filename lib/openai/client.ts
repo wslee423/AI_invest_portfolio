@@ -3,14 +3,17 @@ import type { PortfolioRequest, PortfolioResult } from '@/types'
 import { PortfolioResultSchema, portfolioJsonSchema } from './schema'
 import { SYSTEM_PROMPT, buildUserPrompt } from './prompts'
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-  timeout: 25000,
-})
+function getOpenAIClient() {
+  return new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+    timeout: 25000,
+  })
+}
 
 export async function generatePortfolio(
   req: PortfolioRequest
 ): Promise<PortfolioResult> {
+  const openai = getOpenAIClient()
   const response = await openai.chat.completions.create({
     model: 'gpt-4.1',
     messages: [

@@ -23,6 +23,14 @@ export default function LandingPage() {
         >
           성향 진단 시작하기 →
         </Link>
+
+        <p className="text-xs text-gray-400">
+          서비스를 이용하면{' '}
+          <Link href="/privacy" className="underline hover:text-gray-600">
+            개인정보처리방침
+          </Link>
+          에 동의하는 것으로 간주됩니다.
+        </p>
       </div>
     </main>
   )
