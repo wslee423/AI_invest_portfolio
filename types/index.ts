@@ -24,13 +24,13 @@ export interface BehaviorProfile {
   fomo_type: FomoTypeTag
 }
 
-// 설문 응답 (17문항)
+// 설문 응답 (17문항) — 선택한 옵션의 label 문자열을 저장
 export interface SurveyAnswers {
-  A1: number; A2: number; A3: number
-  B1: number; B2: number; B3: number; B4: number; B5: number; B6: number
-  C1: number; C2: number; C3: number; C4: number; C5: number
-  D1: number; D2: number
-  E1: FomoTypeTag
+  A1?: string; A2?: string; A3?: string
+  B1?: string; B2?: string; B3?: string; B4?: string; B5?: string; B6?: string
+  C1?: string; C2?: string; C3?: string; C4?: string; C5?: string
+  D1?: string; D2?: string
+  E1?: string
 }
 
 // sessionStorage 저장 스키마
