@@ -28,7 +28,8 @@ export async function POST(request: Request) {
     const result = await generatePortfolio(parsed.data)
     return NextResponse.json(result)
   } catch (err) {
-    const message = err instanceof Error ? err.message : ''
+    const message = err instanceof Error ? err.message : String(err)
+    console.error('[API/portfolio] generatePortfolio error:', message)
     const isTimeout = message.includes('timeout') || message.includes('timed out')
     return NextResponse.json<PortfolioError>(
       {

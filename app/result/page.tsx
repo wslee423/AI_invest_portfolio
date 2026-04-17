@@ -23,6 +23,7 @@ type PageState =
 export default function ResultPage() {
   const router = useRouter()
   const [state, setState] = useState<PageState>({ status: 'loading' })
+  const [retryKey, setRetryKey] = useState(0)
 
   useEffect(() => {
     if (!hasCompletedOnboarding()) {
@@ -55,25 +56,42 @@ export default function ResultPage() {
       signal: controller.signal,
     })
       .then(async (res) => {
-        const data = await res.json()
+        let data: unknown
+        try {
+          data = await res.json()
+        } catch {
+          setState({
+            status: 'error',
+            error: { code: 'OPENAI_ERROR', message: 'AI 응답을 처리하는 중 오류가 발생했습니다. 다시 시도해주세요.' },
+          })
+          return
+        }
+
         if (!res.ok) {
           setState({ status: 'error', error: data as PortfolioError })
           return
         }
+
         const result = data as PortfolioResult
         setSession({ ...session, portfolio: result })
         setState({ status: 'success', result, riskLevel: session.riskLevel })
       })
       .catch((err: unknown) => {
         if (err instanceof Error && err.name === 'AbortError') return
+        console.error('[Portfolio] fetch error:', err)
         setState({
           status: 'error',
-          error: { code: 'OPENAI_ERROR', message: '네트워크 오류가 발생했습니다. 잠시 후 다시 시도해주세요.' },
+          error: { code: 'OPENAI_ERROR', message: '연결에 실패했습니다. 인터넷 연결을 확인하고 다시 시도해주세요.' },
         })
       })
 
     return () => controller.abort()
-  }, [router])
+  }, [router, retryKey])
+
+  const handleRetry = () => {
+    setState({ status: 'loading' })
+    setRetryKey((k) => k + 1)
+  }
 
   if (state.status === 'loading') {
     return (
@@ -94,12 +112,20 @@ export default function ResultPage() {
           <div className="text-4xl">⚠️</div>
           <h2 className="text-xl font-bold text-gray-900">오류가 발생했습니다</h2>
           <p className="text-gray-600">{state.error.message}</p>
-          <button
-            onClick={() => window.location.reload()}
-            className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-medium"
-          >
-            다시 시도
-          </button>
+          <div className="flex gap-3 justify-center">
+            <button
+              onClick={() => router.push('/onboarding')}
+              className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+            >
+              설문 다시하기
+            </button>
+            <button
+              onClick={handleRetry}
+              className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-medium"
+            >
+              다시 시도
+            </button>
+          </div>
         </div>
       </main>
     )
