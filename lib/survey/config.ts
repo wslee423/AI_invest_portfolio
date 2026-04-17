@@ -80,7 +80,9 @@ export const SURVEY_QUESTIONS: SurveyQuestion[] = [
     title: '월 투자 가능 금액',
     options: [
       { label: '500만원 이상', score: 5, mappedValue: 6000000 },
-      { label: '100~500만원', score: 4, mappedValue: 2000000 },
+      { label: '300~500만원', score: 4.5, mappedValue: 4000000 },
+      { label: '200~300만원', score: 4, mappedValue: 2500000 },
+      { label: '100~200만원', score: 3.5, mappedValue: 1500000 },
       { label: '50~100만원', score: 3, mappedValue: 750000 },
       { label: '30~50만원', score: 2, mappedValue: 400000 },
       { label: '30만원 미만', score: 1, mappedValue: 150000 },

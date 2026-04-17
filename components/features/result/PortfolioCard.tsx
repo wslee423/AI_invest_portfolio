@@ -107,7 +107,7 @@ export function PortfolioCard({ result, riskLevel }: PortfolioCardProps) {
       </section>
 
       {/* 추천 포트폴리오 플랜 */}
-      {result.portfolio_plans?.length > 0 && (
+      {result.portfolio_plans.length > 0 && (
         <section>
           <h3 className="mb-1 text-lg font-semibold text-gray-900">추천 포트폴리오 플랜</h3>
           <p className="mb-4 text-xs text-gray-400">

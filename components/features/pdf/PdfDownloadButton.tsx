@@ -1,11 +1,13 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { pdf } from '@react-pdf/renderer'
 import type { PortfolioResult, RiskLevel } from '@/types'
 import { RISK_NICKNAMES } from '@/lib/risk-nicknames'
 import { registerFonts } from '@/lib/pdf/fonts'
 import { PdfDocument } from './PdfDocument'
+
+registerFonts()
 
 interface PdfDownloadButtonProps {
   result: PortfolioResult
@@ -14,12 +16,6 @@ interface PdfDownloadButtonProps {
 
 export function PdfDownloadButton({ result, riskLevel }: PdfDownloadButtonProps) {
   const [isGenerating, setIsGenerating] = useState(false)
-  const [ready, setReady] = useState(false)
-
-  useEffect(() => {
-    registerFonts()
-    setReady(true)
-  }, [])
 
   const handleDownload = async () => {
     setIsGenerating(true)
@@ -37,8 +33,6 @@ export function PdfDownloadButton({ result, riskLevel }: PdfDownloadButtonProps)
       setIsGenerating(false)
     }
   }
-
-  if (!ready) return null
 
   return (
     <button

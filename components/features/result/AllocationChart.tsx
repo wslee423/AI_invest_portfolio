@@ -55,7 +55,7 @@ export function AllocationChart({ allocations }: AllocationChartProps) {
             return (
               <span style={{ color: '#374151', fontSize: '13px' }}>
                 {value}
-                <strong style={{ marginLeft: '6px', color: entry.color }}>
+                <strong style={{ marginLeft: '6px', color: entry.color ?? '#374151' }}>
                   {item?.value}%
                 </strong>
               </span>
