@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic'
 import { useRouter } from 'next/navigation'
 import type { PortfolioResult, PortfolioError, PortfolioRequest, RiskLevel } from '@/types'
 import { getSession, setSession, hasCompletedOnboarding } from '@/lib/session'
+import { DEFAULT_BACKGROUND_PROFILE } from '@/lib/survey/extract'
 import { PortfolioCard } from '@/components/features/result/PortfolioCard'
 
 const PdfDownloadButton = dynamic(
@@ -45,6 +46,7 @@ export default function ResultPage() {
       investment_period_years: session.investment_period_years,
       loss_tolerance_pct: session.loss_tolerance_pct,
       behavior_profile: session.behavior_profile,
+      background_profile: session.background_profile ?? DEFAULT_BACKGROUND_PROFILE,
     }
 
     const controller = new AbortController()
@@ -60,6 +62,7 @@ export default function ResultPage() {
         try {
           data = await res.json()
         } catch {
+          console.error('[Portfolio] JSON 파싱 에러')
           setState({
             status: 'error',
             error: { code: 'OPENAI_ERROR', message: 'AI 응답을 처리하는 중 오류가 발생했습니다. 다시 시도해주세요.' },
@@ -68,6 +71,7 @@ export default function ResultPage() {
         }
 
         if (!res.ok) {
+          console.error('[Portfolio] API 에러 응답:', { status: res.status, data })
           setState({ status: 'error', error: data as PortfolioError })
           return
         }

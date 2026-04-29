@@ -57,18 +57,17 @@ Step 5. 문서 + 커밋    → Documenter 역할
 
 ## Step 4 — 품질 검증 게이트
 
-```bash
-npm run typecheck
-npm run lint
-git diff --name-only   # 예상 파일만 변경됐는지 확인
-```
+> **reviewer 서브에이전트에게 위임한다.**
 
-전체 체크리스트 → `QUALITY_SCORE.md §7` 참조
+reviewer 에이전트를 사용해 현재 변경사항에 대한 전체 품질 검증을 수행해줘.
 
-이슈 발견 시: 직접 수정 → 재검증 (최대 3회). 3회 실패 → 에스컬레이션.
+- `git diff`로 변경 파일 파악
+- `docs/QUALITY_SCORE.md §7` 체크리스트 전 항목 순서대로 검증
+- 이슈 발견 시 직접 수정 후 재검증 (최대 3회)
+- 완료 시 `✅ 검증 통과` 보고 후 Step 5로 넘어간다
 
 통과 조건:
-- [ ] `QUALITY_SCORE.md §7` 전 항목 OK
+- [ ] reviewer 에이전트가 `✅ 검증 통과` 보고
 
 ---
 

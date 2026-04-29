@@ -76,6 +76,18 @@ export function PdfDocument({ result, riskLevel }: PdfDocumentProps) {
           <Text style={styles.body}>{result.reasoning}</Text>
         </View>
 
+        {/* 투자 배경 반영 포인트 */}
+        {(result.background_highlights ?? []).length > 0 && (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>투자 배경 반영 포인트</Text>
+            {(result.background_highlights ?? []).map((point, i) => (
+              <Text key={i} style={[styles.body, { marginBottom: 4 }]}>
+                • {point}
+              </Text>
+            ))}
+          </View>
+        )}
+
         {/* 행동 조언 */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>투자 행동 조언</Text>

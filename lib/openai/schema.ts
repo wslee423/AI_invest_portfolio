@@ -35,6 +35,7 @@ export const PortfolioResultSchema = z.object({
   ),
   behavior_advice: z.string().min(1),
   summary: z.string().min(1),
+  background_highlights: z.array(z.string().min(1)).min(1).max(3),
   portfolio_plans: z.array(
     z.object({
       plan_name: z.string().min(1),
@@ -88,6 +89,43 @@ export const PortfolioRequestSchema = z.object({
       'low_fomo',
     ]),
   }),
+  background_profile: z.object({
+    loss_experience: z.enum([
+      'no_major_loss',
+      'recovered_loss',
+      'loss_cautious',
+      'restarting_after_loss',
+      'recovery_pressure',
+    ]),
+    actual_loss_behavior: z.enum([
+      'no_loss_experience',
+      'panic_sell_history',
+      'loss_anxiety',
+      'disciplined_hold',
+      'revenge_trading',
+    ]),
+    affinity_investing: z.enum([
+      'return_only',
+      'light_affinity',
+      'knowledge_based_sector',
+      'brand_affinity',
+      'emotional_attachment_risk',
+    ]),
+    liquidity_event: z.enum([
+      'no_major_event',
+      'family_event',
+      'housing_event',
+      'career_transition',
+      'family_support_risk',
+    ]),
+    money_background: z.enum([
+      'capital_preservation_belief',
+      'saving_oriented',
+      'investment_positive_background',
+      'neutral_money_background',
+      'investment_distrust_background',
+    ]),
+  }),
 })
 
 // OpenAI Structured Outputs용 JSON Schema
@@ -134,6 +172,10 @@ export const portfolioJsonSchema = {
       },
       behavior_advice: { type: 'string' },
       summary: { type: 'string' },
+      background_highlights: {
+        type: 'array',
+        items: { type: 'string' },
+      },
       portfolio_plans: {
         type: 'array',
         items: {
@@ -174,6 +216,7 @@ export const portfolioJsonSchema = {
       'risk_indicators',
       'behavior_advice',
       'summary',
+      'background_highlights',
       'portfolio_plans',
     ],
     additionalProperties: false,

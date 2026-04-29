@@ -51,7 +51,15 @@ export function SurveyStep({
         </div>
       </div>
 
-      <h2 className="text-2xl font-bold text-gray-900 mb-8">{step.title}</h2>
+      <h2 className="text-2xl font-bold text-gray-900 mb-1">
+        <span className="text-blue-500">{step.index}.</span> {step.title}
+      </h2>
+
+      {step.description && (
+        <div className="mb-6 mt-3 rounded-lg bg-blue-50 border border-blue-100 px-4 py-3">
+          <p className="text-sm text-blue-800 leading-relaxed">{step.description}</p>
+        </div>
+      )}
 
       <div className="mb-8">
         {questions.map((question) => (

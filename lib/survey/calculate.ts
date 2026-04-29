@@ -8,6 +8,7 @@ export function calculateRiskScore(answers: SurveyAnswers): number {
     C: { total: 0, count: 0 },
     D: { total: 0, count: 0 },
     E: { total: 0, count: 0 },
+    F: { total: 0, count: 0 }, // F 파트: 가중치 0 — 점수 미반영
   }
 
   // 각 질문의 선택지 점수 합산
@@ -35,13 +36,14 @@ export function calculateRiskScore(answers: SurveyAnswers): number {
     }
   }
 
-  // 가중치 적용
+  // 가중치 적용 (F 파트는 WEIGHTS.F = 0이므로 점수에 영향 없음)
   const weightedScore =
     (categoryAverages['A'] || 0) * SCORE_CONFIG.WEIGHTS.A +
     (categoryAverages['B'] || 0) * SCORE_CONFIG.WEIGHTS.B +
     (categoryAverages['C'] || 0) * SCORE_CONFIG.WEIGHTS.C +
     (categoryAverages['D'] || 0) * SCORE_CONFIG.WEIGHTS.D +
-    (categoryAverages['E'] || 0) * SCORE_CONFIG.WEIGHTS.E
+    (categoryAverages['E'] || 0) * SCORE_CONFIG.WEIGHTS.E +
+    (categoryAverages['F'] || 0) * SCORE_CONFIG.WEIGHTS.F
 
   // 가중치 총합
   const totalWeight =
@@ -49,7 +51,8 @@ export function calculateRiskScore(answers: SurveyAnswers): number {
     SCORE_CONFIG.WEIGHTS.B +
     SCORE_CONFIG.WEIGHTS.C +
     SCORE_CONFIG.WEIGHTS.D +
-    SCORE_CONFIG.WEIGHTS.E
+    SCORE_CONFIG.WEIGHTS.E +
+    SCORE_CONFIG.WEIGHTS.F
 
   // 가중 평균 1~5점을 0~100으로 선형 매핑
   // (avg - 1) / 4 * 100 — 최저 1점=0, 최고 5점=100

@@ -44,6 +44,13 @@ interface PortfolioRequest {
     return_type: ReturnTypeTag
     fomo_type: FomoTypeTag
   }
+  background_profile: {             // F 파트 응답 — 리스크 점수 미반영, 포트폴리오 modifier
+    loss_experience: LossExperienceTag
+    actual_loss_behavior: ActualLossBehaviorTag
+    affinity_investing: AffinityInvestingTag
+    liquidity_event: LiquidityEventTag
+    money_background: MoneyBackgroundTag
+  }
 }
 ```
 
@@ -57,14 +64,30 @@ interface PortfolioResult {
     asset_class: AssetClass         // 6종 중 하나
     ratio: number                   // 배분 비율 (%), 전체 합계 = 100
     description: string             // 해당 자산 선택 이유 1문장
+    examples: string[]              // 실매수 가능 종목·ETF 1~3개
   }[]
   reasoning: string                 // 포트폴리오 구성 근거 3~5문장
   risk_indicators: {
     label: string                   // 예: "예상 연 수익률"
     value: string                   // 예: "8~12%"
   }[]
-  behavior_advice: string           // 행동 프로파일 기반 맞춤 조언 2~3문장
+  behavior_advice: string           // 행동 프로파일 기반 맞춤 조언 (유머체)
   summary: string                   // PDF 요약용 핵심 한 문단
+  background_highlights?: string[]  // background_profile 반영 포인트 2~3개 (optional, backward compat)
+  portfolio_plans: PortfolioPlan[]  // 동일 자산배분 기반 3가지 접근 플랜
+}
+
+interface PortfolioPlan {
+  plan_name: string
+  plan_description: string
+  holdings: {
+    ticker: string
+    asset_class: string
+    monthly_amount: number
+    approx_price: number
+    approx_shares: number
+  }[]
+  total_monthly: number
 }
 
 type AssetClass = '국내주식' | '해외ETF' | '채권' | '리츠' | '금' | '현금성'
@@ -103,75 +126,109 @@ export const maxDuration = 30
 ```
 
 ### 시스템 프롬프트 (`lib/openai/prompts.ts`)
-```
-당신은 대한민국의 전문 투자 자문가입니다.
-사용자의 투자 성향 분석 결과를 바탕으로 맞춤형 포트폴리오를 구성해주세요.
 
-[규칙]
-- allocations의 ratio 합계는 반드시 100이어야 합니다.
-- 사용 가능한 자산군: 국내주식, 해외ETF, 채권, 리츠, 금, 현금성
-- reasoning은 한국어로 3~5문장, 구체적인 근거를 포함합니다.
-- behavior_advice는 투자 관여도·수익 선호·FOMO 유형을 반영한 실용적 조언입니다.
-- 모든 설명은 금융 비전문가가 이해할 수 있는 쉬운 언어로 작성합니다.
+#### 기본 규칙
+- `allocations.ratio` 합계 반드시 100
+- 자산군: 국내주식, 해외ETF, 채권, 리츠, 금, 현금성 (최소 2종, 최대 6종)
+- 레버리지 ETF·단기 투기 상품·파생형 상품 모든 등급 금지
+- 답변은 반드시 한국어
 
-[등급별 자산 배분 가이드라인]
-very_conservative : 현금성 30~40%, 채권 30~40%, 국내주식 10~20%, 나머지 분산
-conservative      : 채권 30~40%, 국내주식 20~30%, 현금성 10~20%, 나머지 분산
-moderate          : 국내주식 25~35%, 해외ETF 20~30%, 채권 15~25%, 나머지 분산
-aggressive        : 국내주식 30~40%, 해외ETF 25~35%, 리츠 10~15%, 나머지 분산
-very_aggressive   : 해외ETF 35~45%, 국내주식 25~35%, 나머지 성장 자산 중심
+#### 등급별 자산 배분 가이드라인
 
-[행동 프로파일 반영 규칙]
-return_type=income 또는 income_growth   : 리츠·배당ETF 비중 확대, 현금흐름 중심 서술
-return_type=growth                      : 성장형 해외ETF 비중 확대, 배당 최소화
-involvement=passive 또는 full_passive   : 인덱스 ETF 중심, 자동화 전략 권장 서술
-fomo_type=exclusion 또는 social_pressure: reasoning에 분산 투자 중요성 및
-                                          단기 충동 매매 리스크 경고 포함
+| 항목 | very_conservative | conservative | moderate | aggressive | very_aggressive |
+|------|:-----------------:|:------------:|:--------:|:----------:|:---------------:|
+| 안정자산 (현금성·채권·금) | 70~90% | 50~70% | 25~45% | 10~25% | 0~15% |
+| 글로벌 대표지수 ETF | 5~20% | 20~35% | 35~50% | 40~55% | 35~50% |
+| 국내주식·국내ETF | 0~10% | 5~15% | 10~20% | 10~20% | 10~20% |
+| 섹터/테마 ETF | 금지 | 배당ETF 한해 0~5% | 0~10% (합산 10% 초과 금지) | 10~20% | 15~25% |
+| 해외 개별주 | 금지 | 금지 | 0~5% (조건부) | 0~10% (조건부) | 5~20% (조건부) |
 
-[출력 JSON 구조]
-아래 구조를 정확히 따르세요:
-{
-  "risk_label": "공격형 투자자",
-  "risk_description": "...",
-  "allocations": [
-    { "asset_class": "국내주식", "ratio": 35, "description": "..." },
-    ...
-  ],
-  "reasoning": "...",
-  "risk_indicators": [
-    { "label": "예상 연 수익률", "value": "8~12%" },
-    { "label": "최대 손실 예상", "value": "20~25%" }
-  ],
-  "behavior_advice": "...",
-  "summary": "..."
-}
-```
+> **조건부** = `affinity_investing`이 `brand_affinity` 또는 `knowledge_based_sector`인 경우에만 허용  
+> aggressive·very_aggressive는 섹터/개별주 편입 시 `reasoning`에 근거 명시 필수  
+> very_aggressive: 섹터+테마+개별주 합산 35% 초과 금지
+
+#### 배당주·배당ETF 조정 규칙 (return_type 기반)
+
+배당 자산은 별도 자산군이 아닌 **국내주식·해외ETF 항목 내 종목 선택**으로 반영한다.
+
+| return_type | 방향 | 대표 예시 종목 |
+|-------------|------|--------------|
+| `income` | 배당ETF·배당성장주 해당 자산군 내 최대화, 현금흐름 설명 | QYLD, SCHD, VYM, KODEX고배당 |
+| `income_growth` | 배당성장ETF 주력 + 성장ETF 보조 | VIG, DGRO, TIGER배당성장 |
+| `balanced` | 성장ETF · 배당ETF 균형 | — |
+| `growth_income` | 성장ETF 주력 + 배당ETF 소량 | — |
+| `growth` | 배당ETF 최소화·제외, 성장ETF 중심 | QQQ, SCHG, CSPX |
+
+#### background_profile 해석 규칙
+
+`background_profile`은 리스크 점수를 직접 바꾸지 않고 포트폴리오 구성 보정·reasoning·behavior_advice에 modifier로 반영한다.
+
+- `recovery_pressure`: 공격형 해석 금지, 빠른 만회 시도 위험성 경고 필수
+- `panic_sell_history` / `loss_anxiety`: 변동성 낮은 자산 비중 상향
+- `revenge_trading`: 섹터/개별주 하한 적용, 감정 관리 조언 필수
+- `disciplined_hold`: 장기 성장형 자산 등급 가이드 상한까지 허용
+- `knowledge_based_sector` / `brand_affinity`: 등급 내 개별주/섹터 ETF 위성 편입 허용
+- `emotional_attachment_risk`: 개별주 등급 하한 이하 제한
+- `housing_event` / `career_transition` / `family_support_risk`: 안정자산 5~10%p 상향, 자금 분리 조언 필수
+- `capital_preservation_belief` / `investment_distrust_background`: 안정성·원칙 중심 설명 톤
+
+#### behavior_advice 작성 규칙
+
+FOMO 유형과 관여도를 고려한 친근·유머 있는 말투로 작성. 적절한 비유·밈 표현 허용.
+
+#### portfolio_plans 작성 규칙
+
+동일 자산배분 비율 유지 + 서로 다른 접근 전략 3가지.  
+`approx_price`는 2025년 기준 원화 단가 (해외 ETF는 1달러=1,400원 환산).  
+`total_monthly` = holdings의 `monthly_amount` 합계 = 입력 월 투자금.
 
 ### 사용자 입력 포맷
 ```
-투자 성향 등급: {risk_level}
+[투자 성향 점수 기반]
+투자 성향: {risk_label}
 월 투자 가능 금액: {monthly_investment}원
 투자 기간: {investment_period_years}년
-허용 손실 범위: {loss_tolerance_pct}%
-투자 관여도: {involvement}
-수익 실현 선호: {return_type}
+최대 손실 허용: {loss_tolerance_pct}%
+관여도: {involvement_label}
+수익 선호: {return_type_label}
 FOMO 유형: {fomo_type}
+
+[투자 배경 (포트폴리오 보정용)]
+손실 경험: {loss_experience_label}
+손실 시 실제 행동: {actual_loss_behavior_label}
+관심·애착 투자 성향: {affinity_label}
+3년 내 유동성 이벤트: {liquidity_label}
+금전 가치관 배경: {money_background_label}
 ```
 
 ---
 
-## 4. 등급별 포트폴리오 예시
+## 4. 등급별 포트폴리오 방향 및 예시
 
-> 구현 참고용. 실제 AI 응답은 behavior_profile에 따라 달라짐.
+> 구현 참고용. 실제 AI 응답은 behavior_profile·background_profile에 따라 달라짐.
+
+### 안정자산 비중 범위
 
 | 자산군 | 매우안정 | 안정 | 중립 | 공격 | 매우공격 |
-|--------|---------|------|------|------|---------|
-| 국내주식 | 10% | 20% | 30% | 35% | 25% |
-| 해외ETF | 5% | 10% | 25% | 30% | 40% |
+|--------|:---------:|:----:|:----:|:----:|:--------:|
+| 안정자산 합계 | 70~90% | 50~70% | 25~45% | 10~25% | 0~15% |
+| 글로벌 지수 ETF | 5~20% | 20~35% | 35~50% | 40~55% | 35~50% |
+| 국내주식·ETF | 0~10% | 5~15% | 10~20% | 10~20% | 10~20% |
+| 섹터/테마 ETF | 금지 | 0~5% | 0~10% | 10~20% | 15~25% |
+| 해외 개별주 | 금지 | 금지 | 0~5%* | 0~10%* | 5~20%* |
+
+\* 조건부: `affinity_investing = brand_affinity / knowledge_based_sector` 인 경우만 허용
+
+### 대표 예시 구성 (월 100만원, balanced, return_only 기준)
+
+| 자산군 | 매우안정 | 안정 | 중립 | 공격 | 매우공격 |
+|--------|:-------:|:----:|:----:|:----:|:--------:|
+| 현금성 | 40% | 20% | 10% | 5% | 0% |
 | 채권 | 35% | 35% | 20% | 10% | 5% |
-| 리츠 | 5% | 10% | 10% | 15% | 15% |
-| 금 | 5% | 5% | 5% | 5% | 10% |
-| 현금성 | 40% | 20% | 10% | 5% | 5% |
+| 금 | 10% | 10% | 10% | 5% | 5% |
+| 해외ETF | 10% | 20% | 35% | 45% | 50% |
+| 국내주식 | 5% | 10% | 15% | 15% | 25% |
+| 리츠 | 0% | 5% | 10% | 20% | 15% |
 
 ---
 
@@ -180,13 +237,16 @@ FOMO 유형: {fomo_type}
 ### 페이지 구조 (`/result`)
 
 ```
-[성향 요약 카드]      risk_label + risk_description
-[자산 배분 섹션]      도넛 차트 + 자산군별 비율·description
-[AI 판단 근거]        reasoning 전문 (CONSTITUTION 원칙 3)
-[리스크 지표]         risk_indicators 리스트
-[투자 행동 조언]      behavior_advice
-[투자 고지 문구]      DisclaimerBanner (CONSTITUTION 원칙 1, 숨김 불가)
-[액션 버튼]           PDF 다운로드 / 다시 진단하기
+[성향 요약 카드]          risk_label + risk_description
+[한 줄 요약]              summary
+[자산 배분 섹션]          도넛 차트 + 자산군별 비율·description·examples
+[리스크 지표]             risk_indicators 리스트 (예상 수익률·MDD·변동성)
+[배분 근거]               reasoning 전문 (CONSTITUTION 원칙 3)
+[투자 배경 반영 포인트]   background_highlights (있을 때만 표시)
+[투자 행동 조언]          behavior_advice (유머체)
+[추천 포트폴리오 플랜]    portfolio_plans 3가지 카드
+[투자 고지 문구]          DisclaimerBanner (CONSTITUTION 원칙 1, 숨김 불가)
+[액션 버튼]               PDF 다운로드 / 다시 진단하기
 ```
 
 ### UI 상태 (3가지 모두 구현 필수)

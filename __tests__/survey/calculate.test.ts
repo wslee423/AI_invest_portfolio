@@ -104,6 +104,32 @@ describe('classifyRiskLevel', () => {
   })
 })
 
+describe('F 파트 risk_score 미반영 검증', () => {
+  it('F 문항이 있어도 없을 때와 동일한 점수를 반환한다', () => {
+    const withoutF = calculateRiskScore(maxAnswers)
+    const withF: SurveyAnswers = {
+      ...maxAnswers,
+      F1: '손실을 빨리 만회하고 싶은 마음이 크다',
+      F2: '손실을 만회하려고 더 위험한 투자를 했다',
+      F3: '좋아하는 회사라면 손실이 나도 쉽게 팔기 어렵다',
+      F4: '주택 구입·이사·전세금 등 목돈 가능성이 있다',
+      F5: '주변의 투자 실패 사례를 자주 봤다',
+    }
+    const withFScore = calculateRiskScore(withF)
+    expect(withFScore).toBe(withoutF)
+  })
+
+  it('F 문항은 risk_score를 높이지 않는다', () => {
+    const baseScore = calculateRiskScore(minAnswers)
+    const withAggressiveF: SurveyAnswers = {
+      ...minAnswers,
+      F1: '손실을 빨리 만회하고 싶은 마음이 크다',
+      F2: '손실을 만회하려고 더 위험한 투자를 했다',
+    }
+    expect(calculateRiskScore(withAggressiveF)).toBe(baseScore)
+  })
+})
+
 describe('applyEmergencyFundAdjustment', () => {
   it('비상금 1~3개월(score 2)이면 1단계 하향', () => {
     const answers: SurveyAnswers = { ...maxAnswers, B6: '1~3개월' }

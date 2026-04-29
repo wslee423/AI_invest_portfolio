@@ -2,26 +2,33 @@ import type {
   InvolvementTag,
   ReturnTypeTag,
   FomoTypeTag,
+  LossExperienceTag,
+  ActualLossBehaviorTag,
+  AffinityInvestingTag,
+  LiquidityEventTag,
+  MoneyBackgroundTag,
 } from '@/types'
 
 // 선택지 타입
 export interface SurveyOption {
   label: string
-  score?: number // E1 (FOMO)는 점수 미반영이므로 선택
+  score?: number
   tag?: InvolvementTag | ReturnTypeTag | FomoTypeTag
+    | LossExperienceTag | ActualLossBehaviorTag | AffinityInvestingTag
+    | LiquidityEventTag | MoneyBackgroundTag
   mappedValue?: number // B2, C1, C2의 매핑값
 }
 
 // 문항 타입
 export interface SurveyQuestion {
   id: string
-  category: 'A' | 'B' | 'C' | 'D' | 'E'
+  category: 'A' | 'B' | 'C' | 'D' | 'E' | 'F'
   title: string
   description?: string
   options: SurveyOption[]
 }
 
-// 17문항 설정
+// 22문항 설정 (A~E: 17문항 + F: 5문항)
 export const SURVEY_QUESTIONS: SurveyQuestion[] = [
   // === 카테고리 A: 기본정보 (3문항) ===
   {
@@ -236,18 +243,123 @@ export const SURVEY_QUESTIONS: SurveyQuestion[] = [
       { label: '별로 FOMO를 느끼지 않는 편', tag: 'low_fomo' as FomoTypeTag },
     ],
   },
+
+  // === 카테고리 F: 투자 배경과 지속 가능성 (5문항, 점수 미반영) ===
+  {
+    id: 'F1',
+    category: 'F',
+    title: '과거 큰 투자 실패 경험',
+    description: '과거 투자 경험이 현재 투자 판단에 어떤 영향을 주는지 파악합니다.',
+    options: [
+      { label: '큰 손실 경험은 없다', tag: 'no_major_loss' as LossExperienceTag },
+      { label: '손실 경험은 있지만 지금 투자 판단에 큰 영향은 없다', tag: 'recovered_loss' as LossExperienceTag },
+      { label: '과거 큰 손실 때문에 아직 조심스럽다', tag: 'loss_cautious' as LossExperienceTag },
+      { label: '큰 손실 이후 투자를 오래 쉬었다가 다시 시작한다', tag: 'restarting_after_loss' as LossExperienceTag },
+      { label: '손실을 빨리 만회하고 싶은 마음이 크다', tag: 'recovery_pressure' as LossExperienceTag },
+    ],
+  },
+  {
+    id: 'F2',
+    category: 'F',
+    title: '손실 상황에서의 실제 행동',
+    description: '이론이 아닌 실제로 어떻게 행동했는지 솔직하게 선택해주세요.',
+    options: [
+      { label: '손실 경험이 거의 없다', tag: 'no_loss_experience' as ActualLossBehaviorTag },
+      { label: '무서워서 바로 팔았다', tag: 'panic_sell_history' as ActualLossBehaviorTag },
+      { label: '계속 확인하면서 불안해했다', tag: 'loss_anxiety' as ActualLossBehaviorTag },
+      { label: '원칙대로 보유하거나 추가 매수했다', tag: 'disciplined_hold' as ActualLossBehaviorTag },
+      { label: '손실을 만회하려고 더 위험한 투자를 했다', tag: 'revenge_trading' as ActualLossBehaviorTag },
+    ],
+  },
+  {
+    id: 'F3',
+    category: 'F',
+    title: '관심·애착 기반 투자 성향',
+    description: '좋아하거나 잘 아는 분야에 투자하고 싶은 성향이 있나요?',
+    options: [
+      { label: '전혀 없다. 수익률과 리스크만 중요하다', tag: 'return_only' as AffinityInvestingTag },
+      { label: '참고는 하지만 큰 영향을 주지는 않는다', tag: 'light_affinity' as AffinityInvestingTag },
+      { label: '내가 잘 아는 산업에는 투자하고 싶다', tag: 'knowledge_based_sector' as AffinityInvestingTag },
+      { label: '좋아하는 브랜드나 회사에는 장기투자하고 싶다', tag: 'brand_affinity' as AffinityInvestingTag },
+      { label: '좋아하는 회사라면 손실이 나도 쉽게 팔기 어렵다', tag: 'emotional_attachment_risk' as AffinityInvestingTag },
+    ],
+  },
+  {
+    id: 'F4',
+    category: 'F',
+    title: '향후 3년 내 큰 지출 계획',
+    description: '투자금의 유동성 필요 여부를 파악합니다.',
+    options: [
+      { label: '특별히 없다', tag: 'no_major_event' as LiquidityEventTag },
+      { label: '결혼·출산·육아 관련 지출 가능성이 있다', tag: 'family_event' as LiquidityEventTag },
+      { label: '주택 구입·이사·전세금 등 목돈 가능성이 있다', tag: 'housing_event' as LiquidityEventTag },
+      { label: '퇴사·이직·창업 가능성이 있다', tag: 'career_transition' as LiquidityEventTag },
+      { label: '가족 지원이나 예상치 못한 큰 지출 가능성이 있다', tag: 'family_support_risk' as LiquidityEventTag },
+    ],
+  },
+  {
+    id: 'F5',
+    category: 'F',
+    title: '돈과 투자에 대한 배경',
+    description: '자신이 어떤 금전 환경에서 영향받았는지 선택해주세요.',
+    options: [
+      { label: '돈은 잃지 않는 것이 가장 중요하다고 배웠다', tag: 'capital_preservation_belief' as MoneyBackgroundTag },
+      { label: '저축과 절약이 가장 중요하다고 배웠다', tag: 'saving_oriented' as MoneyBackgroundTag },
+      { label: '투자와 사업에 비교적 긍정적인 분위기였다', tag: 'investment_positive_background' as MoneyBackgroundTag },
+      { label: '돈에 대해 특별히 배운 기억은 없다', tag: 'neutral_money_background' as MoneyBackgroundTag },
+      { label: '주변의 투자 실패 사례를 자주 봤다', tag: 'investment_distrust_background' as MoneyBackgroundTag },
+    ],
+  },
 ]
 
-// 스텝 구성 (5스텝)
+// 스텝 구성 (6스텝 — F 파트 별도 스텝)
 export const SURVEY_STEPS = [
-  { stepNumber: 1, title: '기본 정보', questions: ['A1', 'A2', 'A3'] },
-  { stepNumber: 2, title: '재무 현황 상', questions: ['B1', 'B2', 'B3'] },
-  { stepNumber: 3, title: '재무 현황 하', questions: ['B4', 'B5', 'B6'] },
-  { stepNumber: 4, title: '리스크 성향', questions: ['C1', 'C2', 'C3', 'C4', 'C5'] },
-  { stepNumber: 5, title: '투자 행동 패턴', questions: ['D1', 'D2', 'E1'] },
+  {
+    stepNumber: 1,
+    index: 'A',
+    title: '기본정보',
+    description: '투자 목적과 경험을 바탕으로 시작점을 확인합니다.',
+    questions: ['A1', 'A2', 'A3'],
+  },
+  {
+    stepNumber: 2,
+    index: 'B',
+    title: '재무현황 상',
+    description: '현재 소득과 투자 가능 금액을 확인합니다.',
+    questions: ['B1', 'B2', 'B3'],
+  },
+  {
+    stepNumber: 3,
+    index: 'C',
+    title: '재무현황 하',
+    description: '자산, 고정비, 비상금 등 재무 안정성을 확인합니다.',
+    questions: ['B4', 'B5', 'B6'],
+  },
+  {
+    stepNumber: 4,
+    index: 'D',
+    title: '리스크 성향',
+    description: '손실과 변동성을 감당할 수 있는 수준을 확인합니다.',
+    questions: ['C1', 'C2', 'C3', 'C4', 'C5'],
+  },
+  {
+    stepNumber: 5,
+    index: 'E',
+    title: '투자행동패턴',
+    description: '투자 관리 방식과 시장 분위기에 대한 반응을 확인합니다.',
+    questions: ['D1', 'D2', 'E1'],
+  },
+  {
+    stepNumber: 6,
+    index: 'F',
+    title: '투자 배경과 지속 가능성',
+    description: '과거 경험과 삶의 상황을 반영해 지속 가능한 투자 방식을 찾습니다.',
+    questions: ['F1', 'F2', 'F3', 'F4', 'F5'],
+  },
 ]
 
-// 카테고리별 가중치 (E는 FOMO 유형 태그용, 점수 미반영)
+// 카테고리별 가중치
+// E, F는 태그/profile 생성용 — 리스크 점수 미반영
 export const SCORE_CONFIG = {
   WEIGHTS: {
     A: 1,
@@ -255,5 +367,6 @@ export const SCORE_CONFIG = {
     C: 2,
     D: 1,
     E: 0,
+    F: 0,
   },
 }

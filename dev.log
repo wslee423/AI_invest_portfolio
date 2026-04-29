@@ -1,0 +1,158 @@
+
+> ai-invest-portfolio@0.1.0 dev
+> next dev
+
+ ⚠ Port 3000 is in use, trying 3001 instead.
+ ⚠ Port 3001 is in use, trying 3002 instead.
+  ▲ Next.js 14.2.35
+  - Local:        http://localhost:3002
+  - Environments: .env.local
+
+ ✓ Starting...
+ ✓ Ready in 1500ms
+ ○ Compiling /api/portfolio ...
+ ✓ Compiled /api/portfolio in 1018ms (207 modules)
+ POST /api/portfolio 400 in 1155ms
+(node:22764) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+ POST /api/portfolio 200 in 48201ms
+ ○ Compiling / ...
+ ✓ Compiled / in 1537ms (500 modules)
+ GET / 200 in 1750ms
+ ✓ Compiled in 200ms (255 modules)
+ ✓ Compiled /onboarding in 302ms (510 modules)
+ ○ Compiling /result ...
+ ✓ Compiled /result in 3.2s (1697 modules)
+ ○ Compiling /api/portfolio ...
+ ✓ Compiled /api/portfolio in 2.3s (971 modules)
+ POST /api/portfolio 200 in 21992ms
+ GET / 200 in 109ms
+ ✓ Compiled in 407ms (1672 modules)
+ ✓ Compiled in 241ms (1672 modules)
+ ✓ Compiled in 192ms (1672 modules)
+ ✓ Compiled in 223ms (1672 modules)
+ ✓ Compiled in 747ms (1686 modules)
+ ✓ Compiled in 253ms (1686 modules)
+ ✓ Compiled in 447ms (1686 modules)
+ ✓ Compiled in 405ms (1686 modules)
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ GET /result 200 in 307ms
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ ✓ Compiled in 526ms (1686 modules)
+ GET /result 200 in 466ms
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ ✓ Compiled in 499ms (1686 modules)
+ GET /result 200 in 373ms
+ GET /result 200 in 44ms
+ ✓ Compiled in 497ms (1672 modules)
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ GET /result 200 in 174ms
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ ✓ Compiled in 427ms (1686 modules)
+ ✓ Compiled in 1ms (765 modules)
+ ✓ Compiled in 0ms (765 modules)
+ ✓ Compiled in 1ms (765 modules)
+ GET /result 200 in 452ms
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ ✓ Compiled in 523ms (1686 modules)
+ GET /result 200 in 315ms
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ ✓ Compiled in 333ms (1686 modules)
+ ✓ Compiled in 1ms (765 modules)
+ ✓ Compiled in 0ms (765 modules)
+ ✓ Compiled in 0ms (765 modules)
+ GET /result 200 in 397ms
+ ✓ Compiled in 349ms (1672 modules)
+ ✓ Compiled in 234ms (1686 modules)
+ ✓ Compiled in 229ms (1686 modules)
+ ✓ Compiled in 271ms (1686 modules)
+ GET /onboarding 200 in 78ms
+ ✓ Compiled in 314ms (1672 modules)
+ ✓ Compiled in 259ms (1686 modules)
+ GET /onboarding 200 in 90ms
+ GET /onboarding 200 in 44ms
+ ✓ Compiled in 381ms (1686 modules)
+ ✓ Compiled /api/portfolio in 324ms (946 modules)
+[API/portfolio] generatePortfolio error: Request timed out.
+ POST /api/portfolio 500 in 76649ms
+ GET /onboarding 200 in 85ms
+ ✓ Compiled / in 197ms (971 modules)
+ GET /onboarding 200 in 67ms
+ GET /onboarding 200 in 59ms
+ POST /api/portfolio 200 in 38320ms
+ GET /onboarding 200 in 85ms
+ GET / 200 in 64ms
+[API/portfolio] generatePortfolio error: Request timed out.
+ ✓ Compiled /_not-found in 326ms (1700 modules)
+ GET /onboarding 404 in 473ms
+ GET /_next/static/css/app/layout.css?v=1777466701201 404 in 19ms
+ GET /_next/static/chunks/main-app.js?v=1777466701201 404 in 49ms
+ GET /_next/static/chunks/app-pages-internals.js 404 in 46ms
+ GET / 404 in 70ms
+ GET /_next/static/css/app/layout.css?v=1777466730219 404 in 24ms
+ GET /_next/static/chunks/app-pages-internals.js 404 in 29ms
+ GET /_next/static/chunks/main-app.js?v=1777466730219 404 in 26ms
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, lstat 'D:\wlabs\AI_invest_portfolio\.next\server\app\_not-found'
+<w> [webpack.cache.PackFileCacheStrategy/webpack.FileSystemInfo] Resolving '../../../../.next/server/app/_not-found/page' in D:\wlabs\AI_invest_portfolio\node_modules\next\dist\server for build dependencies doesn't lead to expected result 'D:\wlabs\AI_invest_portfolio\.next\server\app\_not-found\page.js', but to 'Error: Can't resolve '../../../../.next/server/app/_not-found/page' in 'D:\wlabs\AI_invest_portfolio\node_modules\next\dist\server'' instead. Resolving dependencies are ignored for this path.
+<w>  at resolve commonjs file ../../../../.next/server/app/_not-found/page (expected D:\wlabs\AI_invest_portfolio\.next\server\app\_not-found\page.js)
+<w>  at file dependencies D:\wlabs\AI_invest_portfolio\node_modules\next\dist\server\require.js
+<w>  at file D:\wlabs\AI_invest_portfolio\node_modules\next\dist\server\require.js
+<w>  at file dependencies D:\wlabs\AI_invest_portfolio\node_modules\next\dist\server\load-components.js
+<w>  at file D:\wlabs\AI_invest_portfolio\node_modules\next\dist\server\load-components.js
+<w>  at file dependencies D:\wlabs\AI_invest_portfolio\node_modules\next\dist\build\utils.js
+<w>  at file D:\wlabs\AI_invest_portfolio\node_modules\next\dist\build\utils.js
+<w>  at file dependencies D:\wlabs\AI_invest_portfolio\node_modules\next\dist\build\handle-externals.js
+<w>  at file D:\wlabs\AI_invest_portfolio\node_modules\next\dist\build\handle-externals.js
+<w>  at file dependencies D:\wlabs\AI_invest_portfolio\node_modules\next\dist\build\webpack\loaders\next-swc-loader.js
+<w>  at file D:\wlabs\AI_invest_portfolio\node_modules\next\dist\build\webpack\loaders\next-swc-loader.js
+<w>  at resolve commonjs D:\wlabs\AI_invest_portfolio\node_modules\next\dist\build\webpack\loaders\next-swc-loader.js
+ ✓ Compiled in 1048ms (1686 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, lstat 'D:\wlabs\AI_invest_portfolio\.next\server\app\_not-found'
+<w> [webpack.cache.PackFileCacheStrategy/webpack.FileSystemInfo] Resolving '../../../../.next/server/app/_not-found/page' in D:\wlabs\AI_invest_portfolio\node_modules\next\dist\server for build dependencies doesn't lead to expected result 'D:\wlabs\AI_invest_portfolio\.next\server\app\_not-found\page.js', but to 'Error: Can't resolve '../../../../.next/server/app/_not-found/page' in 'D:\wlabs\AI_invest_portfolio\node_modules\next\dist\server'' instead. Resolving dependencies are ignored for this path.
+<w>  at resolve commonjs file ../../../../.next/server/app/_not-found/page (expected D:\wlabs\AI_invest_portfolio\.next\server\app\_not-found\page.js)
+<w>  at file dependencies D:\wlabs\AI_invest_portfolio\node_modules\next\dist\server\require.js
+<w>  at file D:\wlabs\AI_invest_portfolio\node_modules\next\dist\server\require.js
+<w>  at file dependencies D:\wlabs\AI_invest_portfolio\node_modules\next\dist\server\load-components.js
+<w>  at file D:\wlabs\AI_invest_portfolio\node_modules\next\dist\server\load-components.js
+<w>  at file dependencies D:\wlabs\AI_invest_portfolio\node_modules\next\dist\build\utils.js
+<w>  at file D:\wlabs\AI_invest_portfolio\node_modules\next\dist\build\utils.js
+<w>  at file dependencies D:\wlabs\AI_invest_portfolio\node_modules\next\dist\build\webpack\loaders\next-route-loader\index.js
+<w>  at file D:\wlabs\AI_invest_portfolio\node_modules\next\dist\build\webpack\loaders\next-route-loader\index.js
+<w>  at file dependencies D:\wlabs\AI_invest_portfolio\node_modules\next\dist\build\entries.js
+<w>  at file D:\wlabs\AI_invest_portfolio\node_modules\next\dist\build\entries.js
+<w>  at file dependencies D:\wlabs\AI_invest_portfolio\node_modules\next\dist\build\webpack\plugins\next-types-plugin\index.js
+<w>  at file D:\wlabs\AI_invest_portfolio\node_modules\next\dist\build\webpack\plugins\next-types-plugin\index.js
+<w>  at file dependencies D:\wlabs\AI_invest_portfolio\node_modules\next\dist\build\webpack-config.js
+<w>  at file D:\wlabs\AI_invest_portfolio\node_modules\next\dist\build\webpack-config.js
+<w>  at file dependencies D:\wlabs\AI_invest_portfolio\node_modules\next\dist\build\webpack\loaders\next-swc-loader.js
+<w>  at file D:\wlabs\AI_invest_portfolio\node_modules\next\dist\build\webpack\loaders\next-swc-loader.js
+<w>  at file dependencies D:\wlabs\AI_invest_portfolio\node_modules\next\dist\compiled\loader-runner\LoaderRunner.js
+<w>  at file D:\wlabs\AI_invest_portfolio\node_modules\next\dist\compiled\loader-runner\LoaderRunner.js
+<w>  at file dependencies D:\wlabs\AI_invest_portfolio\node_modules\next\dist\compiled\webpack\bundle5.js
+<w>  at file D:\wlabs\AI_invest_portfolio\node_modules\next\dist\compiled\webpack\bundle5.js
+<w>  at file dependencies D:\wlabs\AI_invest_portfolio\node_modules\next\dist\compiled\webpack\webpack.js
+<w>  at file D:\wlabs\AI_invest_portfolio\node_modules\next\dist\compiled\webpack\webpack.js
+<w>  at file dependencies D:\wlabs\AI_invest_portfolio\node_modules\next\dist\build\webpack\plugins\define-env-plugin.js
+<w>  at file D:\wlabs\AI_invest_portfolio\node_modules\next\dist\build\webpack\plugins\define-env-plugin.js
+<w>  at file dependencies D:\wlabs\AI_invest_portfolio\node_modules\next\dist\build\swc\index.js
+<w>  at file D:\wlabs\AI_invest_portfolio\node_modules\next\dist\build\swc\index.js
+<w>  at file dependencies D:\wlabs\AI_invest_portfolio\node_modules\next\dist\build\webpack\loaders\next-barrel-loader.js
+<w>  at file D:\wlabs\AI_invest_portfolio\node_modules\next\dist\build\webpack\loaders\next-barrel-loader.js
+<w>  at resolve commonjs D:\wlabs\AI_invest_portfolio\node_modules\next\dist\build\webpack\loaders\next-barrel-loader.js
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, lstat 'D:\wlabs\AI_invest_portfolio\.next\server\app\_not-found'
+<w> [webpack.cache.PackFileCacheStrategy/webpack.FileSystemInfo] Resolving '../../../../.next/server/app/_not-found/page' in D:\wlabs\AI_invest_portfolio\node_modules\next\dist\server for build dependencies doesn't lead to expected result 'D:\wlabs\AI_invest_portfolio\.next\server\app\_not-found\page.js', but to 'Error: Can't resolve '../../../../.next/server/app/_not-found/page' in 'D:\wlabs\AI_invest_portfolio\node_modules\next\dist\server'' instead. Resolving dependencies are ignored for this path.
+<w>  at resolve commonjs file ../../../../.next/server/app/_not-found/page (expected D:\wlabs\AI_invest_portfolio\.next\server\app\_not-found\page.js)
+<w>  at file dependencies D:\wlabs\AI_invest_portfolio\node_modules\next\dist\server\require.js
+<w>  at file D:\wlabs\AI_invest_portfolio\node_modules\next\dist\server\require.js
+<w>  at file dependencies D:\wlabs\AI_invest_portfolio\node_modules\next\dist\server\load-components.js
+<w>  at file D:\wlabs\AI_invest_portfolio\node_modules\next\dist\server\load-components.js
+<w>  at file dependencies D:\wlabs\AI_invest_portfolio\node_modules\next\dist\build\utils.js
+<w>  at file D:\wlabs\AI_invest_portfolio\node_modules\next\dist\build\utils.js
+<w>  at file dependencies D:\wlabs\AI_invest_portfolio\node_modules\next\dist\build\handle-externals.js
+<w>  at file D:\wlabs\AI_invest_portfolio\node_modules\next\dist\build\handle-externals.js
+<w>  at file dependencies D:\wlabs\AI_invest_portfolio\node_modules\next\dist\build\webpack\loaders\next-swc-loader.js
+<w>  at file D:\wlabs\AI_invest_portfolio\node_modules\next\dist\build\webpack\loaders\next-swc-loader.js
+<w>  at resolve commonjs D:\wlabs\AI_invest_portfolio\node_modules\next\dist\build\webpack\loaders\next-swc-loader.js

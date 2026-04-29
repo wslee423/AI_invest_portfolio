@@ -38,40 +38,46 @@ export function PortfolioCard({ result, riskLevel }: PortfolioCardProps) {
         <h3 className="mb-4 text-lg font-semibold text-gray-900">자산 배분</h3>
         <AllocationChart allocations={result.allocations} />
         <div className="mt-4 space-y-3">
-          {result.allocations.map((a, i) => (
-            <div key={i} className="rounded-lg border border-gray-100 bg-gray-50 p-3">
-              <div className="flex items-center gap-3 text-sm">
-                <span
-                  className="h-3 w-3 shrink-0 rounded-full"
-                  style={{ backgroundColor: ALLOCATION_COLORS[i % ALLOCATION_COLORS.length] }}
-                />
-                <span className="w-16 shrink-0 font-medium text-gray-800">{a.asset_class}</span>
-                <span
-                  className="w-10 shrink-0 font-bold"
-                  style={{ color: ALLOCATION_COLORS[i % ALLOCATION_COLORS.length] }}
-                >
-                  {a.ratio}%
-                </span>
-                <span className="text-gray-500">{a.description}</span>
-              </div>
-              {a.examples.length > 0 && (
-                <div className="mt-2 flex flex-wrap gap-1.5 pl-6">
-                  {a.examples.map((ex, j) => (
-                    <span
-                      key={j}
-                      className="rounded-full border px-2 py-0.5 text-xs font-medium"
-                      style={{
-                        borderColor: ALLOCATION_COLORS[i % ALLOCATION_COLORS.length],
-                        color: ALLOCATION_COLORS[i % ALLOCATION_COLORS.length],
-                      }}
-                    >
-                      {ex}
-                    </span>
-                  ))}
+          {result.allocations.map((a, i) => {
+            const color = ALLOCATION_COLORS[i % ALLOCATION_COLORS.length]
+            return (
+              <div key={i} className="rounded-xl border border-gray-100 bg-white p-4 shadow-sm">
+                {/* 헤더: 자산명 + 비율 */}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="h-3 w-3 shrink-0 rounded-full" style={{ backgroundColor: color }} />
+                    <span className="font-semibold text-gray-900">{a.asset_class}</span>
+                  </div>
+                  <span className="text-xl font-bold tabular-nums" style={{ color }}>{a.ratio}%</span>
                 </div>
-              )}
-            </div>
-          ))}
+
+                {/* 비율 바 */}
+                <div className="mt-2.5 h-1.5 w-full rounded-full bg-gray-100">
+                  <div className="h-1.5 rounded-full" style={{ width: `${a.ratio}%`, backgroundColor: color }} />
+                </div>
+
+                {/* 설명 박스 */}
+                <div className="mt-3 rounded-lg bg-blue-50 px-3 py-2.5">
+                  <p className="text-sm leading-relaxed text-blue-800">{a.description}</p>
+                </div>
+
+                {/* 예시 태그 */}
+                {a.examples.length > 0 && (
+                  <div className="mt-2.5 flex flex-wrap gap-1.5">
+                    {a.examples.map((ex, j) => (
+                      <span
+                        key={j}
+                        className="rounded-full border px-2.5 py-0.5 text-xs font-medium"
+                        style={{ borderColor: color, color }}
+                      >
+                        {ex}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )
+          })}
         </div>
       </section>
 
@@ -95,6 +101,21 @@ export function PortfolioCard({ result, riskLevel }: PortfolioCardProps) {
           {result.reasoning}
         </p>
       </section>
+
+      {/* 투자 배경 반영 포인트 */}
+      {(result.background_highlights ?? []).length > 0 && (
+        <section>
+          <h3 className="mb-2 text-lg font-semibold text-gray-900">투자 배경 반영 포인트</h3>
+          <ul className="space-y-2">
+            {(result.background_highlights ?? []).map((point, i) => (
+              <li key={i} className="flex items-start gap-2 rounded-lg border border-indigo-100 bg-indigo-50 px-4 py-3 text-sm text-indigo-800">
+                <span className="mt-0.5 shrink-0 text-indigo-400">•</span>
+                <span>{point}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       {/* 행동 조언 */}
       <section>

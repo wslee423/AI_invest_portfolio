@@ -12,6 +12,7 @@ import {
 } from '@/lib/survey/calculate'
 import {
   extractBehaviorProfile,
+  extractBackgroundProfile,
   extractMonthlyInvestment,
   extractLossTolerance,
   extractInvestmentPeriod,
@@ -59,6 +60,7 @@ export default function OnboardingPage() {
       investment_period_years: extractInvestmentPeriod(answers),
       loss_tolerance_pct: extractLossTolerance(answers),
       behavior_profile: extractBehaviorProfile(answers),
+      background_profile: extractBackgroundProfile(answers),
     }
 
     setSession(sessionData)

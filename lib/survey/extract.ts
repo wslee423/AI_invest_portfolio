@@ -1,11 +1,25 @@
 import type {
   SurveyAnswers,
   BehaviorProfile,
+  BackgroundProfile,
   InvolvementTag,
   ReturnTypeTag,
   FomoTypeTag,
+  LossExperienceTag,
+  ActualLossBehaviorTag,
+  AffinityInvestingTag,
+  LiquidityEventTag,
+  MoneyBackgroundTag,
 } from '@/types'
 import { SURVEY_QUESTIONS } from './config'
+
+export const DEFAULT_BACKGROUND_PROFILE: BackgroundProfile = {
+  loss_experience: 'no_major_loss',
+  actual_loss_behavior: 'no_loss_experience',
+  affinity_investing: 'return_only',
+  liquidity_event: 'no_major_event',
+  money_background: 'neutral_money_background',
+}
 
 function getOption(questionId: string, label: string | undefined) {
   if (!label) return undefined
@@ -24,6 +38,24 @@ export function extractBehaviorProfile(
     involvement: (d1?.tag as InvolvementTag) ?? 'semi_passive',
     return_type: (d2?.tag as ReturnTypeTag) ?? 'balanced',
     fomo_type: (e1?.tag as FomoTypeTag) ?? 'low_fomo',
+  }
+}
+
+export function extractBackgroundProfile(
+  answers: SurveyAnswers
+): BackgroundProfile {
+  const f1 = getOption('F1', answers.F1)
+  const f2 = getOption('F2', answers.F2)
+  const f3 = getOption('F3', answers.F3)
+  const f4 = getOption('F4', answers.F4)
+  const f5 = getOption('F5', answers.F5)
+
+  return {
+    loss_experience: (f1?.tag as LossExperienceTag) ?? 'no_major_loss',
+    actual_loss_behavior: (f2?.tag as ActualLossBehaviorTag) ?? 'no_loss_experience',
+    affinity_investing: (f3?.tag as AffinityInvestingTag) ?? 'return_only',
+    liquidity_event: (f4?.tag as LiquidityEventTag) ?? 'no_major_event',
+    money_background: (f5?.tag as MoneyBackgroundTag) ?? 'neutral_money_background',
   }
 }
 
