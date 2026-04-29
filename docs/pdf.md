@@ -1,6 +1,6 @@
 # product-specs/pdf.md — PDF 출력 스펙
 
-> Phase 4 구현 기준 문서.
+> Phase 5 구현 기준 문서.
 > @react-pdf/renderer 기반 클라이언트 사이드 PDF 생성 및 다운로드.
 
 ---
@@ -15,28 +15,34 @@
 
 ---
 
-## 2. PDF 구성 (A4 세로)
+## 2. PDF 구성 (A4 세로, 다중 페이지)
 
 ```
+[페이지 1~N: 동적 페이지]
 ┌─────────────────────────────────────┐
 │  헤더: 서비스명 + 생성 일시          │
 ├─────────────────────────────────────┤
 │  섹션 1: 투자 성향 요약              │
 ├─────────────────────────────────────┤
 │  섹션 2: 자산 배분 테이블            │
-│    (자산군 | 비율 | 선택 이유)       │
+│    (자산군 | 비율 | 설명 | 예시)    │
 ├─────────────────────────────────────┤
-│  섹션 3: AI 판단 근거 (reasoning)   │
+│  섹션 3: 리스크 지표                 │
 ├─────────────────────────────────────┤
-│  섹션 4: 리스크 지표                 │
+│  섹션 4: AI 판단 근거 (reasoning)   │
 ├─────────────────────────────────────┤
-│  섹션 5: 투자 행동 조언              │
+│  섹션 5: 투자 배경 반영 포인트       │  (있을 때만)
+├─────────────────────────────────────┤
+│  섹션 6: 투자 행동 조언              │
+├─────────────────────────────────────┤
+│  섹션 7: 추천 포트폴리오 플랜        │
+│    (플랜 1·2·3 각 보유 종목 테이블) │
 ├─────────────────────────────────────┤
 │  푸터: DisclaimerBanner (고정)      │  ← CONSTITUTION 원칙 1 필수
 └─────────────────────────────────────┘
 ```
 
-내용 초과 시 자동 2페이지. 푸터(`fixed`)는 모든 페이지에 표시.
+내용 초과 시 자동 다중 페이지. 푸터(`fixed`)는 모든 페이지에 표시.
 
 ---
 
@@ -65,16 +71,18 @@ Font.register({
 
 ```
 components/features/pdf/
-  PdfDocument.tsx        ← 전체 PDF 문서 루트 (use client 불필요)
-  PdfHeader.tsx
-  PdfRiskSummary.tsx
-  PdfAllocationTable.tsx
-  PdfReasoning.tsx
-  PdfRiskIndicators.tsx
-  PdfBehaviorAdvice.tsx
-  PdfFooter.tsx          ← DisclaimerBanner (fixed, CONSTITUTION 원칙 1)
-  PdfDownloadButton.tsx  ← 'use client' + dynamic(ssr:false) 필수
-  styles.ts              ← 공용 StyleSheet 정의
+  PdfDocument.tsx            ← 전체 PDF 문서 루트 (use client 불필요)
+                               PortfolioResult props → 각 섹션 조건부 렌더링
+  PdfRiskSummary.tsx         ← 투자 성향 요약
+  PdfAllocationTable.tsx      ← 자산 배분 (자산군 | 비율 | description | examples)
+  PdfRiskIndicators.tsx       ← 리스크 지표
+  PdfReasoning.tsx            ← AI 판단 근거
+  PdfBackgroundHighlights.tsx ← 투자 배경 반영 (background_highlights 있을 때만)
+  PdfBehaviorAdvice.tsx       ← 투자 행동 조언
+  PdfPortfolioPlans.tsx       ← 추천 포트폴리오 플랜 (3가지 플랜 테이블)
+  PdfFooter.tsx               ← DisclaimerBanner (fixed, CONSTITUTION 원칙 1)
+  PdfDownloadButton.tsx       ← 'use client' + dynamic(ssr:false) 필수
+  styles.ts                   ← 공용 StyleSheet 정의
 ```
 
 ---
